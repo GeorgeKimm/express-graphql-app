@@ -1,13 +1,17 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
+const schema = require("./schema/schema");
 const chalk = require("chalk"); // логер
 const morgan = require("morgan"); // еще логер
 const mongoose = require("mongoose");
+const cors = require("cors");
+
 require("dotenv").config();
-const postRoutes = require("./application/routes/post-routes");
-const postApiRoutes = require("./application/routes/api-post-routes");
-const contactRoutes = require("./application/routes/contact-routes");
-const createPath = require("./application/helpers/create-path");
+// comment 4
+// const postRoutes = require("./application/routes/post-routes");
+// const postApiRoutes = require("./application/routes/api-post-routes");
+// const contactRoutes = require("./application/routes/contact-routes");
+// const createPath = require("./application/helpers/create-path");
 
 const errorMsg = chalk.bgKeyword("white").redBright;
 const successMsg = chalk.bgKeyword("green").white;
@@ -15,9 +19,10 @@ const successMsg = chalk.bgKeyword("green").white;
 const app = express();
 
 // установка ejs в качестве view engine
-app.set("view engine", "ejs");
+// comment 1
+// app.set("view engine", "ejs");
 
-const PORT = 3000;
+const PORT = 3005;
 // const password = "0000";
 // const db = `mongodb+srv://george:${password}@cluster0.nehn5.mongodb.net/node-blog?retryWrites=true&w=majority`;
 
@@ -31,6 +36,16 @@ mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((res) => console.log(successMsg("connected to db")))
   .catch((error) => console.log(errorMsg(error)));
+
+app.use(cors());
+
+app.use(
+  "/",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
 
 app.listen(PORT, (error) => {
   error ? console.log(error) : console.log(`app started on port: ${PORT}`);
@@ -56,35 +71,31 @@ app.use(express.urlencoded({ extended: false }));
 // метод static добавляет указанную папку в исключения (т.е. сделать ее общедоступной это значит клиент может получить к ней доступ)
 app.use(express.static("styles"));
 
-// app.use(
-//   "/",
-//   graphqlHTTP({
-//     schema,
-//     graphiql: true,
-//   })
-// );
-
 // методы в express принимают 2 основных параметра
 // 1)root - путь по которому идет обращение
 // 2)callback функция - которая будет вызываться
 
 // для получения данных с сервера на клиент используется метод get
-app.get("/", (req, res) => {
-  // в метод send передаются данные которые нужно отправить в браузер
-  // res.send("<h1>shut up</h1>");
 
-  // в метод sendFile передаются файлы которые нужно отправить в браузер
-  // res.sendFile(createPath("index"));
-  res.render(createPath("index"));
-});
+// comment 8
+// app.get("/", (req, res) => {
+//   // в метод send передаются данные которые нужно отправить в браузер
+//   // res.send("<h1>shut up</h1>");
 
-app.use(postRoutes);
-app.use(contactRoutes);
-app.use(postApiRoutes);
+//   // в метод sendFile передаются файлы которые нужно отправить в браузер
+//   // res.sendFile(createPath("index"));
+//   res.render(createPath("index"));
+// });
+
+// comment 3
+// app.use(postRoutes);
+// app.use(contactRoutes);
+// app.use(postApiRoutes);
 
 // логика перехвата несуществующих путей(должна быть последней)
 // все что находится после use не может обрабатывать запросы
-app.use((req, res) => {
-  // res.statusCode = 404; // можно так
-  res.status(404).render(createPath("error"));
-});
+// comment 4
+// app.use((req, res) => {
+//   // res.statusCode = 404; // можно так
+//   res.status(404).render(createPath("error"));
+// });

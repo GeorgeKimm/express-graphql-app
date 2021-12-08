@@ -1,34 +1,56 @@
 import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { Link, Outlet } from "react-router-dom";
 
-import withHocs from "./posts-hoc";
+import { postsQuery } from "./queries";
+import { deletePostMutation } from "./mutation";
 
-function Posts(props) {
-  console.log("props", props);
-  console.log("data", props.data);
-  const { data, deletePost } = props;
-  console.log("deletePostCheck", deletePost);
-  const { posts = [] } = data;
+function Posts() {
+  const [name, setName] = useState("");
+
+  // useQuery возвращает состоянии загрузки, ошибку если она есть и 3 аргумент объект со свойствами
+  const {
+    loading,
+    error,
+    data = {},
+  } = useQuery(postsQuery, {
+    variables: { name },
+  });
+
+  console.log("postsQuery", postsQuery);
+  console.log("data", data);
+  const { posts } = data;
+  // console.log("posts", posts);
+
+  // useMutation первым аргументом возвращает функцию, остальное как у useQuery
+  const [deletePost, { load, err, dataDeletePost }] = useMutation(
+    deletePostMutation,
+    {
+      refetchQueries: [{ query: postsQuery, variables: { name } }],
+    }
+  );
 
   function handleDelete(id) {
     console.log("id", id);
-    deletePost(id);
+    deletePost({ variables: { id: id } });
   }
 
   return (
     <>
       <h1>Posts:</h1>
       <ul>
-        {posts.length &&
-          posts.map(({ id, title, text, author }) => {
+        {posts &&
+          posts.map(({ id, title, text, author, createdAt }) => {
             return (
               <li key={id}>
                 <article>
                   <h2>
-                    <a href={`/posts/${id}>`}>{title}</a>
+                    {/* <a href={`/posts/${id}`}>{title}</a> */}
+                    <Link to={`/posts/${id}`}>{title}</Link>
                   </h2>
                   <p>{text}</p>
                   <div className="info">
-                    {/* <span>{createdAt.toLocaleDateString()}</span> */}
+                    <span>{createdAt}</span>
                     <span>{author}</span>
                   </div>
                   <button
@@ -42,8 +64,9 @@ function Posts(props) {
             );
           })}
       </ul>
+      <Outlet />
     </>
   );
 }
 
-export default withHocs(Posts);
+export default Posts;

@@ -1,12 +1,3 @@
-# Для запуска
-
-в корне npm i
-далее перейти в application
-снова npm i
-
-из application запускаем команду npm start
-из корня npm run dev
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

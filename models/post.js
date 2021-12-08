@@ -4,21 +4,21 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema(
   {
     text: {
-      type: string,
+      type: String,
       required: true,
     },
     title: {
-      type: string,
+      type: String,
       required: true,
     },
     author: {
-      type: string,
+      type: String,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", postSchema);
+const Post = mongoose.model("Testpost", postSchema);
 
 module.exports = Post;
