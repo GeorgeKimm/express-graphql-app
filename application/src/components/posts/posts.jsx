@@ -17,8 +17,7 @@ function Posts() {
     variables: { name },
   });
 
-  console.log("postsQuery", postsQuery);
-  console.log("data", data);
+  // console.log("data", data);
   const { posts } = data;
   // console.log("posts", posts);
 
@@ -31,7 +30,7 @@ function Posts() {
   );
 
   function handleDelete(id) {
-    console.log("id", id);
+    // console.log("id", id);
     deletePost({ variables: { id: id } });
   }
 
@@ -64,7 +63,6 @@ function Posts() {
             );
           })}
       </ul>
-      <Outlet />
     </>
   );
 }

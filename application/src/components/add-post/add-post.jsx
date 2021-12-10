@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 import { postsQuery } from "../posts/queries";
 import { addPostMutation } from "./mutation";
@@ -9,6 +10,7 @@ function AddPost() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [text, setText] = useState("");
+  const navigate = useNavigate();
 
   const [addPost, { loading, error, dataAddPost }] = useMutation(
     addPostMutation,
@@ -19,6 +21,8 @@ function AddPost() {
 
   function handleSubmit(e) {
     addPost({ variables: { title: title, author: author, text: text } });
+    navigate("/add-post");
+    // window.location.reload();
   }
 
   function handleChange(e) {

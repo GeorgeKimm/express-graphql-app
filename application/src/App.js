@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import Nav from "./components/menu/menu";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./components/home/home";
 import Contacts from "./components/contacts/contacts";
 import Posts from "./components/posts/posts";
@@ -14,18 +14,66 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const AutoReload = ({ children }) => {
+  const location = useLocation();
+  const previousKey = useRef("default");
+  // console.log("previousKey", previousKey);
+  // console.log("locationkey", location);
+
+  useEffect(() => {
+    if (
+      previousKey.current !== "default" &&
+      previousKey.current !== location.key
+    ) {
+      window.location.reload();
+    }
+    previousKey.current = location.key;
+  }, [location]);
+
+  return children;
+};
+
 function App() {
   return (
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Nav />
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/posts" element={<Posts />}>
-            <Route path=":id" element={<Post />} />
-          </Route>
-          <Route exact path="/add-post" element={<AddPost />} />
-          <Route exact path="/contacts" element={<Contacts />} />
+          <Route
+            exact
+            path="/"
+            element={
+              <AutoReload>
+                <Home />
+              </AutoReload>
+            }
+          />
+          <Route
+            exact
+            path="/posts"
+            element={
+              <AutoReload>
+                <Posts />
+              </AutoReload>
+            }
+          />
+          <Route path="/posts/:id" element={<Post />} />
+          <Route
+            path="/add-post"
+            element={
+              <AutoReload>
+                <AddPost />
+              </AutoReload>
+            }
+          />
+          <Route
+            path="/contacts"
+            element={
+              <AutoReload>
+                <Contacts />
+              </AutoReload>
+            }
+          />
           <Route path="*" element={<h2>there is nothing here</h2>} />
         </Routes>
       </BrowserRouter>

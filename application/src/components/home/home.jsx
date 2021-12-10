@@ -4,7 +4,7 @@ function Home() {
   return (
     <>
       <h1>Home Page</h1>
-      <p>hello it's a site home page</p>
+      <p>May the Force be with you</p>
     </>
   );
 }

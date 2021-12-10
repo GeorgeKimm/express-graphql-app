@@ -10,3 +10,14 @@ export const postsQuery = gql`
     }
   }
 `;
+
+export const postQuery = gql`
+  query postQuery($id: ID) {
+    post(id: $id) {
+      id
+      text
+      title
+      author
+    }
+  }
+`;

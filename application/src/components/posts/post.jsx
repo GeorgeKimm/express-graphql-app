@@ -1,25 +1,51 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { useParams, useNavigate } from "react-router-dom";
 
-{
-  /* <article class="post">
-  <div class="info">
-    <span>{post.author}</span>
-  </div>
-  <h1>{post.title}</h1>
-  <p>{post.text}</p>
-  <button class="btn-delete" data-id={post.id}>
-    <i class="fas fa-trash-alt" data-id={post.id}></i>
-  </button>
-</article>; */
-}
+import { postQuery } from "./queries";
+import { postsQuery } from "./queries";
+import { deletePostMutation } from "./mutation";
 
 function Post() {
-  let params = useParams();
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
+  const params = useParams();
+
+  const { id } = params;
+
+  const { data = {} } = useQuery(postQuery, {
+    variables: { id },
+  });
+
+  const { post } = data;
+
+  const [deletePost, { loading, error, dataDeletePost }] = useMutation(
+    deletePostMutation,
+    {
+      refetchQueries: [{ query: postsQuery, variables: { name } }],
+    }
+  );
+
+  function handleDelete(id) {
+    // console.log("id", id);
+    deletePost({ variables: { id: id } });
+    navigate("/posts");
+  }
+
   return (
     <>
-      <h1>Post Page</h1>
-      <p>{params.id}</p>
+      {post && (
+        <article className="post">
+          <div className="info">
+            <span>{post.author}</span>
+          </div>
+          <h1>{post.title}</h1>
+          <p>{post.text}</p>
+          <button className="btn-delete" onClick={() => handleDelete(post.id)}>
+            <i className="fas fa-trash-alt"></i>
+          </button>
+        </article>
+      )}
     </>
   );
 }

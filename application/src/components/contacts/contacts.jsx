@@ -14,8 +14,7 @@ function Contacts() {
     variables: { name },
   });
 
-  console.log("contactsQuery", contactsQuery);
-  console.log("contactData", data);
+  // console.log("contactData", data);
   const { contacts } = data;
 
   return (

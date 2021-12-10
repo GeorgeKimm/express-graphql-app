@@ -20,7 +20,6 @@ function Nav() {
           </li>
         </ul>
       </nav>
-      <Outlet />
     </>
   );
 }
